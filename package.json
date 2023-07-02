@@ -16,5 +16,9 @@
     "crud"
   ],
   "author": "Eduard Nebolsin",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.3.3",
+    "typescript": "^5.1.6"
+  }
 }
