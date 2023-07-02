@@ -61,7 +61,9 @@ const validateNewUser = (user: Partial<UserForPost>) => {
 };
 
 const deleteUser = async (userId: string) => {
-  const user = getUserById(userId);
+  await getUserById(userId);
+  const index = users.findIndex((user) => user.id === userId);
+  users.splice(index, 1);
 };
 
 export default {
