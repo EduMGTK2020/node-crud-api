@@ -27,9 +27,8 @@ const getUserById = async (userId: string) => {
 };
 
 const addNewUser = async (user: Object) => {
-  const bodyData = user as UserForPost;
-
   validateNewUser(user);
+  const bodyData = user as UserForPost;
 
   const newUser: User = {
     id: utils.getNewUserId(),
@@ -66,9 +65,22 @@ const deleteUser = async (userId: string) => {
   users.splice(index, 1);
 };
 
+const updateUser = async (userId: string, userData: Object) => {
+  let userForUpdate = await getUserById(userId);
+  validateNewUser(userData);
+  const bodyData = userData as UserForPost;
+
+  userForUpdate.username = bodyData.username;
+  userForUpdate.age = bodyData.age;
+  userForUpdate.hobbies = bodyData.hobbies;
+
+  return userForUpdate;
+};
+
 export default {
   getAllUsers,
   getUserById,
   addNewUser,
   deleteUser,
+  updateUser,
 };

@@ -51,7 +51,7 @@ export default (port: number) => {
             result = await db.getUserById(userId);
             break;
           case 'PUT':
-            console.log('update one');
+            result = await db.updateUser(userId, await getRequestBody(request));
             break;
           case 'DELETE':
             result = await db.deleteUser(userId);
