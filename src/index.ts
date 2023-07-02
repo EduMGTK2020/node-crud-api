@@ -1,6 +1,7 @@
 import { createServer, IncomingMessage, ServerResponse } from 'http';
+import config from './config';
 
-const port = 4000;
+const { PORT } = config;
 
 const server = createServer(
   (request: IncomingMessage, response: ServerResponse) => {
@@ -9,6 +10,6 @@ const server = createServer(
   }
 );
 
-server.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
+server.listen(PORT, () => {
+  console.log(`Server listening on port ${PORT}`);
 });
