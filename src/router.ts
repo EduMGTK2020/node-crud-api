@@ -77,8 +77,17 @@ export default (port: number) => {
       response.statusCode = statusCode;
       response.end(JSON.stringify(result));
     } catch (error) {
-      const status = (error as HTTPError).statusCode;
-      const message = (error as HTTPError).message;
+      let status: number;
+      let message: string;
+
+      if (error instanceof HTTPError) {
+        status = (error as HTTPError).statusCode;
+        message = (error as HTTPError).message;
+      } else {
+        status = 500;
+        message = 'Internal server error: ' + (error as Error).message;
+      }
+      
       response.statusCode = status;
       response.end(
         JSON.stringify({

@@ -17,6 +17,10 @@ type UserForPost = {
 const users: User[] = [];
 
 const getAllUsers = async () => users;
+// for check 500 status code Internal server error
+// const getAllUsers = async () => {
+//   throw new Error('test error message');
+// };
 
 const getUserById = async (userId: string) => {
   const user = users.find((user) => user.id === userId);
