@@ -60,8 +60,13 @@ const validateNewUser = (user: Partial<UserForPost>) => {
   }
 };
 
+const deleteUser = async (userId: string) => {
+  const user = getUserById(userId);
+};
+
 export default {
   getAllUsers,
   getUserById,
   addNewUser,
+  deleteUser,
 };

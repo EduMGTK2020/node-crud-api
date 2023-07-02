@@ -54,7 +54,8 @@ export default (port: number) => {
             console.log('update one');
             break;
           case 'DELETE':
-            console.log('remove one');
+            result = await db.deleteUser(userId);
+            statusCode = 204;
             break;
           default:
             throw new Error400('method not implemented');
