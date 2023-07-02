@@ -1,5 +1,6 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import { validate as isUserIdValid } from 'uuid';
+import { HTTPError, Error400, Error404 } from './errors';
 
 const apiUrl = /^\/api\/users\/?$/;
 const apiUrlWithId = /^\/api\/users\/[^\/]+$/;
@@ -22,24 +23,29 @@ export default (port: number) => {
 
     console.log(`Incoming request: ${method} ${url} on port ${port}`);
 
-    if (!urlIsValid(url)) {
-      response.statusCode = 404;
-      response.write('non-existing endpoints');
-      response.end();
-    } else {
-      const userId = getId(url);
-
-      console.log(userId);
-
-      if (userId && !isUserIdValid(userId)) {
-        response.statusCode = 400;
-        response.write('invalid user id');
-        response.end();
-      } else {
-        response.write(url);
-        response.statusCode = 200;
-        response.end();
+    try {
+      if (!urlIsValid(url)) {
+        throw new Error404('non-existing endpoints');
       }
+
+      const userId = getId(url);
+      if (userId && !isUserIdValid(userId)) {
+        throw new Error400('invalid user id');
+      }
+
+      response.write(url);
+      response.statusCode = 200;
+      response.end();
+    } catch (error) {
+      const status = (error as HTTPError).statusCode;
+      const message = (error as HTTPError).message;
+      response.statusCode = status;
+      response.end(
+        JSON.stringify({
+          status,
+          message,
+        }),
+      );
     }
   };
 };

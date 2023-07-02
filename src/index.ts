@@ -1,6 +1,6 @@
 import { createServer, IncomingMessage, ServerResponse } from 'http';
 import config from './config';
-import router from './route/router';
+import router from './router';
 
 const { PORT } = config;
 
