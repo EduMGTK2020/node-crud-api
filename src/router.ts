@@ -3,6 +3,27 @@ import { HTTPError, Error400, Error404 } from './errors';
 import utils from './utils';
 import db from './db';
 
+const getRequestBody = async (request: IncomingMessage): Promise<Object> => {
+  let body = '';
+
+  request.on('data', (chunk) => {
+    body += chunk.toString();
+  });
+
+  return new Promise((resolve, reject) => {
+    request.on('end', () => {
+      try {
+        const requestBody = JSON.parse(body);
+        resolve(requestBody);
+      } catch (error) {
+        reject(
+          new Error400('body parsing error - ' + (error as Error).message),
+        );
+      }
+    });
+  });
+};
+
 export default (port: number) => {
   return async (request: IncomingMessage, response: ServerResponse) => {
     const method = request.method;
@@ -22,18 +43,15 @@ export default (port: number) => {
       }
 
       let result = null;
+      let statusCode = 200;
 
       if (userId) {
         switch (method) {
           case 'GET':
-            console.log('get one', userId);
-            await db.getUserById(userId);
+            result = await db.getUserById(userId);
             break;
           case 'PUT':
             console.log('update one');
-            break;
-          case 'PUT':
-            console.log('put one');
             break;
           case 'DELETE':
             console.log('remove one');
@@ -44,18 +62,18 @@ export default (port: number) => {
       } else {
         switch (method) {
           case 'GET':
-            console.log('get all');
             result = await db.getAllUsers();
-
             break;
           case 'POST':
-            console.log('create one');
+            result = await db.addNewUser(await getRequestBody(request));
+            statusCode = 201;
             break;
           default:
             throw new Error400('method not implemented');
         }
       }
-      response.statusCode = 200;
+
+      response.statusCode = statusCode;
       response.end(JSON.stringify(result));
     } catch (error) {
       const status = (error as HTTPError).statusCode;

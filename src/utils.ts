@@ -1,4 +1,4 @@
-import { validate as isUserIdValid } from 'uuid';
+import { validate as isUserIdValid, v4 } from 'uuid';
 
 const apiUrl = /^\/api\/users\/?$/;
 const apiUrlWithId = /^\/api\/users\/[^\/]+$/;
@@ -14,8 +14,13 @@ const getId = (url: string) => {
   return groups ? groups[1] : null;
 };
 
+const getNewUserId = () => {
+  return v4();
+};
+
 export default {
-    urlIsValid,
-    getId,
-    isUserIdValid
-}
+  urlIsValid,
+  getId,
+  getNewUserId,
+  isUserIdValid,
+};
