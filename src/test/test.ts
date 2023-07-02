@@ -1,0 +1,64 @@
+import request from 'supertest';
+
+const baseUrl = 'http://localhost:4500/';
+
+const testUser = {
+  username: 'Edward',
+  age: 55,
+  hobbies: ['football'],
+};
+
+let testUserId = '';
+
+describe('Tests for Simple CRUD API', () => {
+  test('Get all records with a GET api/users', async () => {
+    const response = await request(baseUrl).get('api/users');
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toMatchObject([]);
+  });
+
+  test('A new object is created by a POST api/users request', async () => {
+    const response = await request(baseUrl).post('api/users').send(testUser);
+    expect(response.statusCode).toBe(201);
+
+    expect(response.body.username).toBe(testUser.username);
+    expect(response.body.age).toBe(testUser.age);
+    expect(response.body.hobbies).toMatchObject(testUser.hobbies);
+
+    testUserId = response.body.id;
+  });
+
+  test('With a GET api/user/{userId} request, we try to get the created record by its id', async () => {
+    const response = await request(baseUrl).get(`api/users/${testUserId}`);
+    expect(response.statusCode).toBe(200);
+    expect(response.body.id).toBe(testUserId);
+    expect(response.body.username).toBe(testUser.username);
+    expect(response.body.age).toBe(testUser.age);
+    expect(response.body.hobbies).toMatchObject(testUser.hobbies);
+  });
+
+  test('Try to update the created record with a PUT api/users/{userId}request', async () => {
+    testUser.username = 'Mike';
+    testUser.age = 15;
+    testUser.hobbies = ['football', 'dancing'];
+
+    const response = await request(baseUrl)
+      .put(`api/users/${testUserId}`)
+      .send(testUser);
+    expect(response.statusCode).toBe(200);
+    expect(response.body.username).toBe(testUser.username);
+    expect(response.body.age).toBe(testUser.age);
+    expect(response.body.hobbies).toMatchObject(testUser.hobbies);
+  });
+
+  test('With a DELETE api/users/{userId} request, we delete the created object by id', async () => {
+    const response = await request(baseUrl).delete(`api/users/${testUserId}`);
+    expect(response.statusCode).toBe(204);
+  });
+
+  test('With a GET api/users/{userId} request, we are trying to get a deleted object by id', async () => {
+    const response = await request(baseUrl).get(`api/users/${testUserId}`);
+    expect(response.statusCode).toBe(404);
+    expect(response.body.message).toContain("doesn't exist");
+  });
+});
