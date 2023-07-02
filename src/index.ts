@@ -7,7 +7,7 @@ const server = createServer(
   (request: IncomingMessage, response: ServerResponse) => {
     console.log(request.url);
     response.end('Hello world!');
-  }
+  },
 );
 
 server.listen(PORT, () => {
