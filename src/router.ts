@@ -1,12 +1,14 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import { HTTPError, Error400, Error404 } from './errors';
 import utils from './utils';
+import db from './db';
 
 export default (port: number) => {
   return async (request: IncomingMessage, response: ServerResponse) => {
     const method = request.method;
     const url: string = request.url || '';
 
+    response.setHeader('Content-Type', 'application/json');
     console.log(`Incoming request: ${method} ${url} on port ${port}`);
 
     try {
@@ -19,9 +21,42 @@ export default (port: number) => {
         throw new Error400('invalid user id');
       }
 
-      response.write(url);
+      let result = null;
+
+      if (userId) {
+        switch (method) {
+          case 'GET':
+            console.log('get one', userId);
+            await db.getUserById(userId);
+            break;
+          case 'PUT':
+            console.log('update one');
+            break;
+          case 'PUT':
+            console.log('put one');
+            break;
+          case 'DELETE':
+            console.log('remove one');
+            break;
+          default:
+            throw new Error400('method not implemented');
+        }
+      } else {
+        switch (method) {
+          case 'GET':
+            console.log('get all');
+            result = await db.getAllUsers();
+
+            break;
+          case 'POST':
+            console.log('create one');
+            break;
+          default:
+            throw new Error400('method not implemented');
+        }
+      }
       response.statusCode = 200;
-      response.end();
+      response.end(JSON.stringify(result));
     } catch (error) {
       const status = (error as HTTPError).statusCode;
       const message = (error as HTTPError).message;
