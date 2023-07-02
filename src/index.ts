@@ -1,15 +1,10 @@
 import { createServer, IncomingMessage, ServerResponse } from 'http';
 import config from './config';
+import router from './route/router';
 
 const { PORT } = config;
 
-const server = createServer(
-  (request: IncomingMessage, response: ServerResponse) => {
-    console.log(request.url);
-    response.end('Hello world!');
-  },
-);
-
+const server = createServer(router(PORT));
 server.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
