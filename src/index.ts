@@ -1,1 +1,1 @@
-console.log('Hello world! Nodemon')
+console.log('Hello world! Nodemon, Webpack')
