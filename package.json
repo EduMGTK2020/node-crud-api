@@ -9,9 +9,9 @@
     "test": "jest --silent",
     "test:verbose": "jest",
     "start:dev": "npx nodemon",
-    "start:prod": "npm run build && node build/bundle.js",
+    "start:prod": "npm run build && node build/single/bundle.js",
     "start:multi": "npx ts-node ./src/balancer.ts",
-    "start:multi:prod": "npm run build:multi && node build-multi/bundle.js",
+    "start:multi:prod": "npm run build:multi && node build/multi/bundle.js",
     "build": "webpack",
     "build:multi": "webpack --config webpack.config.multi.js",
     "build:all": "npm run build && npm run build:multi"
