@@ -47,7 +47,7 @@ describe('Tests for Simple CRUD API', () => {
     expect(response.body.hobbies).toMatchObject(testUser.hobbies);
   });
 
-  test('Try to update the created record with a PUT api/users/{userId}request', async () => {
+  test('Try to update the created record with a PUT api/users/{userId} request', async () => {
     testUser.username = 'Mike';
     testUser.age = 15;
     testUser.hobbies = ['football', 'dancing'];
@@ -70,5 +70,16 @@ describe('Tests for Simple CRUD API', () => {
     const response = await request(baseUrl).get(`api/users/${testUserId}`);
     expect(response.statusCode).toBe(404);
     expect(response.body.message).toContain("doesn't exist");
+  });
+
+  test('Request to non-existing endpoints', async () => {
+    const response = await request(baseUrl).get('non-existing-endpoint');
+    expect(response.statusCode).toBe(404);
+  });
+
+  test('Request if userId is invalid (not uuid)', async () => {
+    const response = await request(baseUrl).get('api/users/111-222-333-444');
+    expect(response.statusCode).toBe(400);
+    expect(response.body.message).toBe('Bad Request: invalid user id');
   });
 });
