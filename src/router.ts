@@ -35,7 +35,9 @@ const handler = (port: number, silent?: boolean, multi?: boolean) => {
 
     response.setHeader('Content-Type', 'application/json');
     if (!silent)
-      console.log(`Incoming request: ${method} ${url} on port ${port}`);
+      console.log(
+        `Incoming request: ${method} ${url} on port ${port} (pid: ${process.pid})`,
+      );
 
     try {
       if (!utils.urlIsValid(url)) {

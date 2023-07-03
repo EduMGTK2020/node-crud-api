@@ -106,6 +106,12 @@ describe('3-Tests for Simple CRUD API - errors 400 cases', () => {
     );
   });
 
+  test('Request with method not implemented', async () => {
+    const response = await request(baseUrl).put('api/users/').send({});
+    expect(response.statusCode).toBe(400);
+    expect(response.body.message).toBe('Bad Request: method not implemented');
+  });
+
   test('Request with broken body', async () => {
     const response = await request(baseUrl)
       .post('api/users/')

@@ -3,20 +3,11 @@ import router from './router';
 import config from './config';
 import os from 'os';
 import cluster, { Worker } from 'cluster';
-
 import { User } from './types';
-
-// type User = {
-//   id: string;
-//   username: string;
-//   age: number;
-//   hobbies: string[];
-// };
 
 const { PORT } = config;
 
 const parallelism = os.cpus().length - 1;
-
 const minPort = PORT + 1;
 const maxPort = PORT + parallelism;
 let currentPort = minPort;
@@ -28,7 +19,7 @@ if (cluster.isPrimary) {
     const method = request.method;
     const url: string = request.url || '';
     console.log(
-      `Incoming request: ${method} ${url} on port ${PORT} => redirect to ${currentPort}`,
+      `Incoming request: ${method} ${url} on port ${PORT} (pid: ${process.pid}) => redirect to ${currentPort}`,
     );
 
     const proxy = http.request(
@@ -60,7 +51,9 @@ if (cluster.isPrimary) {
   };
 
   createServer(onProxy).listen(PORT, () => {
-    console.log(`Primary server is listening on port ${PORT}`);
+    console.log(
+      `Balancer server is listening on port ${PORT} (pid: ${process.pid})`,
+    );
   });
 
   for (let i = 0; i < parallelism; i++) {
@@ -84,6 +77,6 @@ if (cluster.isPrimary) {
   });
 
   server.listen(PORT, () => {
-    console.log(`Worker server listening on port ${PORT}`);
+    console.log(`Worker server listening on port ${PORT} (id: ${process.pid})`);
   });
 }
