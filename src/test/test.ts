@@ -1,16 +1,26 @@
 import request from 'supertest';
+import server from '../server';
 
-const baseUrl = 'http://localhost:4500/';
+const baseUrl = `http://localhost:${server.getPort()}/`;
 
 const testUser = {
   username: 'Edward',
   age: 55,
-  hobbies: ['football'],
+  hobbies: ['diving'],
 };
 
 let testUserId = '';
 
 describe('Tests for Simple CRUD API', () => {
+  beforeAll(() => {
+    server.run();
+  });
+
+  afterAll((done) => {
+    server.close();
+    done();
+  });
+
   test('Get all records with a GET api/users', async () => {
     const response = await request(baseUrl).get('api/users');
     expect(response.statusCode).toBe(200);
