@@ -10,17 +10,18 @@ const testUser = {
 };
 
 let testUserId = '';
+const validUserId = '402c00a6-fd6a-427e-95fe-72d57d828036';
 
-describe('Tests for Simple CRUD API', () => {
-  beforeAll(() => {
-    server.run();
-  });
+beforeAll(() => {
+  server.run(true);
+});
 
-  afterAll((done) => {
-    server.close();
-    done();
-  });
+afterAll((done) => {
+  server.close();
+  done();
+});
 
+describe('1-Tests for Simple CRUD API - valid cases', () => {
   test('Get all records with a GET api/users', async () => {
     const response = await request(baseUrl).get('api/users');
     expect(response.statusCode).toBe(200);
@@ -66,20 +67,64 @@ describe('Tests for Simple CRUD API', () => {
     expect(response.statusCode).toBe(204);
   });
 
-  test('With a GET api/users/{userId} request, we are trying to get a deleted object by id', async () => {
+  test('Request with deleted userId ', async () => {
     const response = await request(baseUrl).get(`api/users/${testUserId}`);
     expect(response.statusCode).toBe(404);
-    expect(response.body.message).toContain("doesn't exist");
+    expect(response.body.message).toContain(
+      `Not Found: user with id ${testUserId} doesn't exist`,
+    );
+  });
+});
+
+describe('2-Tests for Simple CRUD API - errors 404 cases', () => {
+  test("Request if userId is valid but doesn't exist", async () => {
+    const response = await request(baseUrl).get(`api/users/${validUserId}`);
+    expect(response.statusCode).toBe(404);
+    expect(response.body.message).toContain(
+      `Not Found: user with id ${validUserId} doesn't exist`,
+    );
   });
 
   test('Request to non-existing endpoints', async () => {
     const response = await request(baseUrl).get('non-existing-endpoint');
     expect(response.statusCode).toBe(404);
   });
+});
 
+describe('3-Tests for Simple CRUD API - errors 400 cases', () => {
   test('Request if userId is invalid (not uuid)', async () => {
     const response = await request(baseUrl).get('api/users/111-222-333-444');
     expect(response.statusCode).toBe(400);
     expect(response.body.message).toBe('Bad Request: invalid user id');
+  });
+
+  test('Request with empty body', async () => {
+    const response = await request(baseUrl).post('api/users/').send({});
+    expect(response.statusCode).toBe(400);
+    expect(response.body.message).toBe(
+      'Bad Request: missing or incorrect - username, age, hobbies',
+    );
+  });
+
+  test('Request with broken body', async () => {
+    const response = await request(baseUrl)
+      .post('api/users/')
+      .send('broken-body');
+    expect(response.statusCode).toBe(400);
+    expect(response.body.message).toBe(
+      'Bad Request: body parsing error - Unexpected token b in JSON at position 0',
+    );
+  });
+
+  test('Request with incorrect age', async () => {
+    const response = await request(baseUrl).post('api/users/').send({
+      username: 'John',
+      age: '25',
+      hobbies: [],
+    });
+    expect(response.statusCode).toBe(400);
+    expect(response.body.message).toBe(
+      'Bad Request: missing or incorrect - age',
+    );
   });
 });

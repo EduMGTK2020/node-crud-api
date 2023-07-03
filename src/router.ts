@@ -24,13 +24,14 @@ const getRequestBody = async (request: IncomingMessage): Promise<object> => {
   });
 };
 
-export default (port: number) => {
+export default (port: number, silent?: boolean) => {
   return async (request: IncomingMessage, response: ServerResponse) => {
     const method = request.method;
     const url: string = request.url || '';
 
     response.setHeader('Content-Type', 'application/json');
-    console.log(`Incoming request: ${method} ${url} on port ${port}`);
+    if (!silent)
+      console.log(`Incoming request: ${method} ${url} on port ${port}`);
 
     try {
       if (!utils.urlIsValid(url)) {

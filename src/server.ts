@@ -5,15 +5,15 @@ import router from './router';
 let server: Server;
 const { PORT } = config;
 
-const run = () => {
-  server = createServer(router(PORT));
+const run = (silent?: boolean) => {
+  server = createServer(router(PORT, silent));
 
   server.on('error', (error: Error) => {
     console.log(`Server stopped: ${(error as Error).message}`);
   });
 
   server.listen(PORT, () => {
-    console.log(`Server listening on port ${PORT}`);
+    if (!silent) console.log(`Server listening on port ${PORT}`);
   });
 };
 
