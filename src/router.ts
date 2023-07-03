@@ -3,7 +3,7 @@ import { HTTPError, Error400, Error404 } from './errors';
 import utils from './utils';
 import db from './db';
 
-const getRequestBody = async (request: IncomingMessage): Promise<Object> => {
+const getRequestBody = async (request: IncomingMessage): Promise<object> => {
   let body = '';
 
   request.on('data', (chunk) => {
@@ -87,7 +87,7 @@ export default (port: number) => {
         status = 500;
         message = 'Internal server error: ' + (error as Error).message;
       }
-      
+
       response.statusCode = status;
       response.end(
         JSON.stringify({

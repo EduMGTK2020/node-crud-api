@@ -30,7 +30,7 @@ const getUserById = async (userId: string) => {
   return user;
 };
 
-const addNewUser = async (user: Object) => {
+const addNewUser = async (user: object) => {
   validateNewUser(user);
   const bodyData = user as UserForPost;
 
@@ -46,7 +46,7 @@ const addNewUser = async (user: Object) => {
 };
 
 const validateNewUser = (user: Partial<UserForPost>) => {
-  let errors = [];
+  const errors = [];
   const isNameValid = user.username && typeof user.username === 'string';
   if (!isNameValid) errors.push('username');
 
@@ -69,8 +69,8 @@ const deleteUser = async (userId: string) => {
   users.splice(index, 1);
 };
 
-const updateUser = async (userId: string, userData: Object) => {
-  let userForUpdate = await getUserById(userId);
+const updateUser = async (userId: string, userData: object) => {
+  const userForUpdate = await getUserById(userId);
   validateNewUser(userData);
   const bodyData = userData as UserForPost;
 
