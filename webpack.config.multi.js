@@ -1,12 +1,12 @@
 const path = require('path');
 
 module.exports = {
-  entry: './src/index.ts',
+  entry: './src/balancer.ts',
   target: 'node',
   mode: 'production',
   output: {
     filename: 'bundle.js',
-    path: path.resolve(__dirname, 'build/single'),
+    path: path.resolve(__dirname, 'build/multi'),
   },
   module: {
     rules: [

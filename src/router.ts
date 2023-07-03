@@ -24,7 +24,11 @@ const getRequestBody = async (request: IncomingMessage): Promise<object> => {
   });
 };
 
-export default (port: number, silent?: boolean) => {
+const getDb = () => {
+  return db.getAllUsers();
+};
+
+const handler = (port: number, silent?: boolean, multi?: boolean) => {
   return async (request: IncomingMessage, response: ServerResponse) => {
     const method = request.method;
     const url: string = request.url || '';
@@ -77,6 +81,11 @@ export default (port: number, silent?: boolean) => {
 
       response.statusCode = statusCode;
       response.end(JSON.stringify(result));
+
+      if (multi) {
+        typeof process.send === 'function' &&
+          process.send(await db.getAllUsers());
+      }
     } catch (error) {
       let status: number;
       let message: string;
@@ -98,4 +107,9 @@ export default (port: number, silent?: boolean) => {
       );
     }
   };
+};
+
+export default {
+  handler,
+  getDb,
 };

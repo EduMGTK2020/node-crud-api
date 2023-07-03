@@ -6,7 +6,7 @@ let server: Server;
 const { PORT } = config;
 
 const run = (silent?: boolean) => {
-  server = createServer(router(PORT, silent));
+  server = createServer(router.handler(PORT, silent));
 
   server.on('error', (error: Error) => {
     console.log(`Server stopped: ${(error as Error).message}`);

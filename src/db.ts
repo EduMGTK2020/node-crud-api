@@ -1,18 +1,18 @@
 import { Error400, Error404 } from './errors';
 import utils from './utils';
+import { User, UserForPost } from './types';
+// type User = {
+//   id: string;
+//   username: string;
+//   age: number;
+//   hobbies: string[];
+// };
 
-type User = {
-  id: string;
-  username: string;
-  age: number;
-  hobbies: string[];
-};
-
-type UserForPost = {
-  username: string;
-  age: number;
-  hobbies: string[];
-};
+// type UserForPost = {
+//   username: string;
+//   age: number;
+//   hobbies: string[];
+// };
 
 const users: User[] = [];
 
